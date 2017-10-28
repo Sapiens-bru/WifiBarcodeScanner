@@ -7,7 +7,7 @@ import retrofit2.Retrofit;
  */
 
 public class RetrofitClass {
-    static final String BASE_URL = "http://37.193.129.153/service/hs/";
+    public static final String BASE_URL = "http://192.168.1.44:4242";
 
     public static RetrofitIterface getApi() {
 
