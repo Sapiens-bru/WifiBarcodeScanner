@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">WifiBarcodeScanner</string>
+    <string name="app_name">BScanner</string>
     <string name="toggle_flash">Flash</string>
     <string name="btn_scan">Scan!</string>
+    <string name="check_server">Check Server</string>
 
 </resources>

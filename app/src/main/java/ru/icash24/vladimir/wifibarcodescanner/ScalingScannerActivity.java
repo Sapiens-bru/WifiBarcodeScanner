@@ -3,12 +3,14 @@ package ru.icash24.vladimir.wifibarcodescanner;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,10 +34,13 @@ public class ScalingScannerActivity extends AppCompatActivity implements ZXingSc
     SharedPreferences mSettings;
     private RetrofitIterface retInt;
     private String url;
+    private long storedtime;
+    private String storedbarcode = "0000000000000";
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
         setContentView(R.layout.activity_scaling_scanner);
+        setTitle("Wifi Barcode Scanner");
         ViewGroup contentFrame = (ViewGroup) findViewById(R.id.content_frame);
         mScannerView = new ZXingScannerView(this);
         contentFrame.addView(mScannerView);
@@ -71,34 +76,55 @@ public class ScalingScannerActivity extends AppCompatActivity implements ZXingSc
 
     @Override
     public void handleResult(Result rawResult) {
+        long currentTime= System.currentTimeMillis();
+        String currentbarcode = rawResult.getText().toString();
 
-        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-        r.play();
+        if (currentbarcode.equals(storedbarcode)){
+            if (currentTime-storedtime<1000){
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mScannerView.resumeCameraPreview(ScalingScannerActivity.this);
+                    }
+                }, 0);
+                return;
+            }
+        }
+        Log.v("frags",rawResult.getBarcodeFormat().toString());
+        storedbarcode=currentbarcode;
+        storedtime = currentTime;
+        final MediaPlayer mp_scan = MediaPlayer.create(this, R.raw.beepscan);
+        mp_scan.start();
+        final MediaPlayer mp_sucsess = MediaPlayer.create(this, R.raw.beepsucsess);
+        final MediaPlayer mp_error = MediaPlayer.create(this, R.raw.beeperror);
 
-        final Activity CurrentActivity=this;
         retInt = RetrofitClass.getApi();
         url = "http://"+host_ip+":4242/";
-        retInt.getData(url,rawResult.getText()).enqueue(new Callback<ResponseBody>() {
+        retInt.getData(url,currentbarcode).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.code()==200){
+                    mp_sucsess.start();
+                }else {
+                    mp_error.start();
 
+                }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-
+                mp_error.start();
             }
         });
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+      Handler handler = new Handler();
+      handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mScannerView.resumeCameraPreview(ScalingScannerActivity.this);
             }
-        }, 2000);
+        }, 0);
     }
 
     public void toggleFlash(View v) {
