@@ -14,7 +14,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import okhttp3.ResponseBody;
@@ -53,6 +57,7 @@ public class ScalingScannerActivity extends AppCompatActivity implements ZXingSc
 
     @Override
     public void onResume() {
+        List<BarcodeFormat> MY_FORMATS = new ArrayList();
         super.onResume();
         mScannerView.setResultHandler(this);
         // You can optionally set aspect ratio tolerance level
@@ -60,6 +65,9 @@ public class ScalingScannerActivity extends AppCompatActivity implements ZXingSc
         mScannerView.setAspectTolerance(0.2f);
         mScannerView.startCamera();
         mScannerView.setFlash(mFlash);
+        MY_FORMATS.clear();
+        MY_FORMATS.add(BarcodeFormat.EAN_13);
+        mScannerView.setFormats(MY_FORMATS);
     }
 
     @Override

@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:onClick="ocl_scan"
         android:text="@string/btn_scan"
         app:layout_constraintLeft_toLeftOf="parent"
