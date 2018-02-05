@@ -87,18 +87,18 @@ public class ScalingScannerActivity extends AppCompatActivity implements ZXingSc
         long currentTime= System.currentTimeMillis();
         String currentbarcode = rawResult.getText().toString();
 
-        if (currentbarcode.equals(storedbarcode)){
-            if (currentTime-storedtime<1000){
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mScannerView.resumeCameraPreview(ScalingScannerActivity.this);
-                    }
-                }, 0);
-                return;
-            }
-        }
+//        if (currentbarcode.equals(storedbarcode)){
+//            if (currentTime-storedtime<1000){
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mScannerView.resumeCameraPreview(ScalingScannerActivity.this);
+//                    }
+//                }, 0);
+//                return;
+//            }
+//        }
         Log.v("frags",rawResult.getBarcodeFormat().toString());
         storedbarcode=currentbarcode;
         storedtime = currentTime;
@@ -116,7 +116,6 @@ public class ScalingScannerActivity extends AppCompatActivity implements ZXingSc
                     mp_sucsess.start();
                 }else {
                     mp_error.start();
-
                 }
             }
 
@@ -125,14 +124,16 @@ public class ScalingScannerActivity extends AppCompatActivity implements ZXingSc
                 mp_error.start();
             }
         });
+        this.finish();
 
-      Handler handler = new Handler();
-      handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mScannerView.resumeCameraPreview(ScalingScannerActivity.this);
-            }
-        }, 0);
+
+//      Handler handler = new Handler();
+//      handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mScannerView.resumeCameraPreview(ScalingScannerActivity.this);
+//            }
+//        }, 0);
     }
 
     public void toggleFlash(View v) {
